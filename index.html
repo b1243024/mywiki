@@ -1,8 +1,0 @@
-
-<h1>MyWiki 首頁</h1>
-<a href="/new">新增文章</a>
-<ul>
-{% for id, title in articles %}
-    <li><a href="/article/{{ id }}">{{ title }}</a></li>
-{% endfor %}
-</ul>
