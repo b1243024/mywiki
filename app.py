@@ -73,3 +73,20 @@ def create():
 if __name__ == '__main__':
     init_db()  # 確保 wiki.db 存在
     app.run(host='0.0.0.0', port=5000)
+
+def init_db():
+    if not os.path.exists('wiki.db'):
+        conn = sqlite3.connect('wiki.db')
+        c = conn.cursor()
+        c.execute('''
+            CREATE TABLE articles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
+        print('wiki.db 已建立')
+    else:
+        print('wiki.db 已存在')
