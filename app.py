@@ -47,3 +47,21 @@ def new_article():
 if __name__ == '__main__':
     init_db()
     app.run()
+
+if __name__ == '__main__':
+    # 建立資料庫（如果不存在）
+    import os
+    if not os.path.exists('wiki.db'):
+        import sqlite3
+        conn = sqlite3.connect('wiki.db')
+        c = conn.cursor()
+        c.execute('''
+            CREATE TABLE articles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
+    app.run(host='0.0.0.0', port=5000)
