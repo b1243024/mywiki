@@ -3,24 +3,24 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-app.config['DEBUG'] = True  # 開啟除錯，讓錯誤顯示在 Render Logs
+app.config['DEBUG'] = True  # 顯示錯誤
 
-# ===== 自動建立資料庫和表格 =====
+# ===== 建立資料庫和表格 =====
 def init_db():
-    if not os.path.exists('wiki.db'):
-        conn = sqlite3.connect('wiki.db')
-        c = conn.cursor()
-        c.execute('''
-            CREATE TABLE articles (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL
-            )
-        ''')
-        conn.commit()
-        conn.close()
+    conn = sqlite3.connect('wiki.db')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS articles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+    print('資料庫和資料表已建立')
 
-# ===== 首頁：列出所有文章 =====
+# ===== 首頁 =====
 @app.route('/')
 def index():
     try:
@@ -34,24 +34,7 @@ def index():
         print(f'[INDEX ERROR] {e}')
         return 'Internal Server Error', 500
 
-# ===== 查看單篇文章 =====
-@app.route('/article/<int:article_id>')
-def article(article_id):
-    try:
-        conn = sqlite3.connect('wiki.db')
-        c = conn.cursor()
-        c.execute('SELECT * FROM articles WHERE id=?', (article_id,))
-        article = c.fetchone()
-        conn.close()
-        if article:
-            return render_template('article.html', article=article)
-        else:
-            return 'Article not found', 404
-    except Exception as e:
-        print(f'[ARTICLE ERROR] {e}')
-        return 'Internal Server Error', 500
-
-# ===== 新增文章 =====
+# ===== 建立文章 =====
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST':
@@ -69,24 +52,24 @@ def create():
             return 'Internal Server Error', 500
     return render_template('create.html')
 
-# ===== 啟動應用程式 =====
-if __name__ == '__main__':
-    init_db()  # 確保 wiki.db 存在
-    app.run(host='0.0.0.0', port=5000)
-
-def init_db():
-    if not os.path.exists('wiki.db'):
+# ===== 單篇文章 =====
+@app.route('/article/<int:article_id>')
+def article(article_id):
+    try:
         conn = sqlite3.connect('wiki.db')
         c = conn.cursor()
-        c.execute('''
-            CREATE TABLE articles (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL
-            )
-        ''')
-        conn.commit()
+        c.execute('SELECT * FROM articles WHERE id=?', (article_id,))
+        article = c.fetchone()
         conn.close()
-        print('wiki.db 已建立')
-    else:
-        print('wiki.db 已存在')
+        if article:
+            return render_template('article.html', article=article)
+        else:
+            return 'Article not found', 404
+    except Exception as e:
+        print(f'[ARTICLE ERROR] {e}')
+        return 'Internal Server Error', 500
+
+# ===== 主程式入口 =====
+if __name__ == '__main__':
+    init_db()  # ← 確保建表
+    app.run(host='0.0.0.0', port=5000)
