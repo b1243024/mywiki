@@ -39,9 +39,13 @@
 </head>
 <body>
   <h1>文章列表</h1>
-  {% if articles %}
+  {% for article in articles %}
+  <li><a href="/article/{{ article[0] }}">{{ article[1] }}</a></li>
+{% endfor %}
     <ul>
-      {% for article in articles %}
+     {% for article in articles %}
+  <li><a href="/article/{{ article[0] }}">{{ article[1] }}</a></li>
+{% endfor %}
         <li><a href="/article/{{ article[0] }}">{{ article[1] }}</a></li>
       {% endfor %}
     </ul>
