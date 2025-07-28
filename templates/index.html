@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <title>老虎島-演唱會月曆</title>
+  <title>老虎島-演唱會月曆 - 文章列表</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -39,32 +39,17 @@
 </head>
 <body>
   <h1>文章列表</h1>
-  {% for article in articles %}
-  <li><a href="/article/{{ article[0] }}">{{ article[1] }}</a></li>
-{% endfor %}
+
+  {% if articles %}
     <ul>
-     {% for article in articles %}
-  <li><a href="/article/{{ article[0] }}">{{ article[1] }}</a></li>
-{% endfor %}
+      {% for article in articles %}
         <li><a href="/article/{{ article[0] }}">{{ article[1] }}</a></li>
       {% endfor %}
     </ul>
   {% else %}
     <p>目前沒有文章，請新增。</p>
   {% endif %}
-  <a class="btn" href="/create">新增文章</a>
+
+  <a class="btn" href="/new">新增文章</a>
 </body>
 </html>
-@app.route('/')
-def index():
-    try:
-        conn = sqlite3.connect('wiki.db')
-        c = conn.cursor()
-        c.execute('SELECT id, title FROM articles')
-        rows = c.fetchall()
-        conn.close()
-        print("[DEBUG] articles =", rows)
-        return render_template('index.html', articles=rows)
-    except Exception as e:
-        print("[INDEX ERROR]", e)
-        return f"首頁錯誤：{e}" 
