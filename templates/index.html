@@ -55,3 +55,17 @@
   <a class="btn" href="/create">新增文章</a>
 </body>
 </html>
+
+@app.route('/')
+def index():
+    try:
+        conn = sqlite3.connect('wiki.db')
+        c = conn.cursor()
+        c.execute('SELECT id, title FROM articles')
+        rows = c.fetchall()
+        conn.close()
+        print("Articles:", rows)  # debug
+        return render_template('index.html', articles=rows)
+    except Exception as e:
+        print("[INDEX ERROR]", e)
+        return "首頁發生錯誤：" + str(e)
