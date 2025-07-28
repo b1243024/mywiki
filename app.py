@@ -42,3 +42,17 @@ def index():
 # ===== 啟動 Flask（本地測試時才用）=====
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+@app.route('/create', methods=['GET', 'POST'])
+def create():
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        # 將資料存到資料庫
+        conn = sqlite3.connect('wiki.db')
+        c = conn.cursor()
+        c.execute('INSERT INTO articles (title, content) VALUES (?, ?)', (title, content))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))  # 新增後回首頁
+    return render_template('create.html')  # GET 請求時呈現表單
