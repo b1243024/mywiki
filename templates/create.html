@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>新增文章</title>
+</head>
+<body>
+  <h1>新增文章</h1>
+  <form method="POST" action="/create">
+    <label>標題：</label><br />
+    <input type="text" name="title" required /><br /><br />
+    <label>內容：</label><br />
+    <textarea name="content" rows="10" cols="50" required></textarea><br /><br />
+    <button type="submit">送出</button>
+  </form>
+  <a href="/">回首頁</a>
+</body>
+</html>
