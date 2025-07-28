@@ -21,12 +21,17 @@ def init_db():
 
 @app.route('/')
 def index():
-    conn = sqlite3.connect('wiki.db')
-    c = conn.cursor()
-    c.execute('SELECT id, title FROM articles')
-    rows = c.fetchall()
-    conn.close()
-    return render_template('index.html', articles=rows)
+    try:
+        conn = sqlite3.connect('wiki.db')
+        c = conn.cursor()
+        c.execute('SELECT id, title FROM articles')
+        rows = c.fetchall()
+        conn.close()
+        print("[DEBUG] articles =", rows)
+        return render_template('index.html', articles=rows)
+    except Exception as e:
+        print("[INDEX ERROR]", e)
+        return f"<h1>首頁錯誤：</h1><p>{e}</p>"
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
